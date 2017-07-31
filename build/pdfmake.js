@@ -26661,8 +26661,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function flow(stream) {
 	  var state = stream._readableState;
-	  debug('flow', state.flowing);
-	  while (state.flowing && stream.read() !== null) {}
+       debug('flow', state.flowing);
+       if (state.flowing) {
+         do {
+           var chunk = stream.read(Number.MAX_SAFE_INTEGER); // grab MAX_SAFE_INTEGER bytes
+         } while (null !== chunk && state.flowing);
+       }
 	}
 
 	// wrap an old-style stream as the async data source.
